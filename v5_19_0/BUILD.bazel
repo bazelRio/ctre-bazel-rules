@@ -1,0 +1,224 @@
+
+load("@rules_java//java:defs.bzl", "java_library")
+load("@wpi_bazel_rules//rules:cc.bzl",  "wpilib_cc_library")
+load("@wpi_bazel_rules//rules:wpilib_repo.bzl", "make_cpp_alias", "make_jni_alias")
+
+package(default_visibility = ["//visibility:public"])
+
+make_cpp_alias(name = "ctre-wpiapi-cpp")
+
+make_cpp_alias(name = "ctre-api-cpp")
+
+make_cpp_alias(name = "ctre-cci")
+
+make_cpp_alias(name = "ctre-cci-sim")
+
+make_cpp_alias(name = "ctre-diagnostics")
+
+make_cpp_alias(name = "ctre-canutils")
+
+make_cpp_alias(name = "ctre-platform-sim")
+
+make_cpp_alias(name = "ctre-core")
+
+make_cpp_alias(name = "ctre-simTalonSRX")
+
+make_cpp_alias(name = "ctre-simVictorSPX")
+
+alias(
+    name = "api-java",
+    actual = "@maven//:com_ctre_phoenix_api_java",
+)
+
+alias(
+    name = "wpiapi-java",
+    actual = "@maven//:com_ctre_phoenix_wpiapi_java",
+)
+
+
+make_jni_alias(name = "ctre-java-native__com_ctre_phoenix__cci")
+
+make_jni_alias(name = "ctre-java-native__com_ctre_phoenix_sim__cci_sim")
+
+make_jni_alias(name = "ctre-java-native__com_ctre_phoenix_sim__simTalonSRX")
+
+make_jni_alias(name = "ctre-java-native__com_ctre_phoenix_sim__simVictorSPX")
+
+
+alias(
+    name = "ccijni",
+    actual = ":ctre-java-native__com_ctre_phoenix__cci-jni-lib",
+)
+
+alias(
+    name = "cci-simjni",
+    actual = ":ctre-java-native__com_ctre_phoenix_sim__cci_sim-jni-lib",
+)
+
+alias(
+    name = "simTalonSRXjni",
+    actual = ":ctre-java-native__com_ctre_phoenix_sim__simTalonSRX-jni-lib",
+)
+
+alias(
+    name = "simVictorSPXjni",
+    actual = ":ctre-java-native__com_ctre_phoenix_sim__simVictorSPX-jni-lib",
+)
+
+
+wpilib_cc_library(
+    name = "wpiapi-cpp",
+    raw_deps = [
+        "@ctre-wpiapi-cpp-headers//:headers",
+        ":ctre-wpiapi-cpp-libs",
+    ],
+    linkstatic=1,
+)
+
+wpilib_cc_library(
+    name = "api-cpp",
+    raw_deps = [
+        "@ctre-api-cpp-headers//:headers",
+        ":ctre-api-cpp-libs",
+    ],
+    linkstatic=1,
+)
+
+wpilib_cc_library(
+    name = "cci",
+    raw_deps = [
+        "@ctre-cci-headers//:headers",
+        ":ctre-cci-libs",
+    ],
+    linkstatic=1,
+)
+
+wpilib_cc_library(
+    name = "cci-sim",
+    raw_deps = [
+        "@ctre-cci-sim-headers//:headers",
+        ":ctre-cci-sim-libs",
+    ],
+    linkstatic=1,
+)
+
+wpilib_cc_library(
+    name = "diagnostics",
+    raw_deps = [
+        "@ctre-diagnostics-headers//:headers",
+        ":ctre-diagnostics-libs",
+    ],
+    linkstatic=1,
+)
+
+wpilib_cc_library(
+    name = "canutils",
+    raw_deps = [
+        "@ctre-canutils-headers//:headers",
+        ":ctre-canutils-libs",
+    ],
+    linkstatic=1,
+)
+
+wpilib_cc_library(
+    name = "platform-sim",
+    raw_deps = [
+        "@ctre-platform-sim-headers//:headers",
+        ":ctre-platform-sim-libs",
+    ],
+    linkstatic=1,
+)
+
+wpilib_cc_library(
+    name = "core",
+    raw_deps = [
+        "@ctre-core-headers//:headers",
+        ":ctre-core-libs",
+    ],
+    linkstatic=1,
+)
+
+wpilib_cc_library(
+    name = "simTalonSRX",
+    srcs = [
+        ":ctre-simTalonSRX-shared-libs",
+    ],
+    raw_deps = [
+        "@ctre-simTalonSRX-headers//:headers",
+        ":ctre-simTalonSRX-libs",
+    ],
+    linkstatic=1,
+)
+
+wpilib_cc_library(
+    name = "simVictorSPX",
+    srcs = [
+        ":ctre-simVictorSPX-shared-libs",
+    ],
+    raw_deps = [
+        "@ctre-simVictorSPX-headers//:headers",
+        ":ctre-simVictorSPX-libs",
+    ],
+    linkstatic=1,
+)
+wpilib_cc_library(
+    name = "ctre-cpp",
+    raw_deps = select({
+        "@wpi_bazel_rules//toolchains/conditions:roborio": [
+            ":wpiapi-cpp",
+            ":api-cpp",
+            ":cci",
+            ":diagnostics",
+            ":core",
+        ],
+        "@bazel_tools//src/conditions:windows": [
+            ":wpiapi-cpp",
+            ":api-cpp",
+            ":cci-sim",
+            ":diagnostics",
+            ":canutils",
+            ":platform-sim",
+            ":core",
+            ":simTalonSRX",
+            ":simVictorSPX",
+        ],
+        "@bazel_tools//src/conditions:linux_x86_64": [
+            ":wpiapi-cpp",
+            ":api-cpp",
+            ":cci-sim",
+            ":diagnostics",
+            ":canutils",
+            ":platform-sim",
+            ":core",
+            ":simTalonSRX",
+            ":simVictorSPX",
+        ],
+    }),
+)
+
+java_library(
+    name = "ctre-java",
+    exports = [
+        ":api-java",
+        ":wpiapi-java",
+    ],
+)
+
+filegroup(
+    name = "jni_deps",
+    srcs = select({
+        "@wpi_bazel_rules//toolchains/conditions:roborio": [
+            ":ctre-java-native__com_ctre_phoenix__cci-jni-lib",
+        ],
+        "@bazel_tools//src/conditions:windows": [
+            ":ctre-java-native__com_ctre_phoenix_sim__cci_sim-jni-lib",
+            ":ctre-java-native__com_ctre_phoenix_sim__simTalonSRX-jni-lib",
+            ":ctre-java-native__com_ctre_phoenix_sim__simVictorSPX-jni-lib",
+        ],
+        "@bazel_tools//src/conditions:linux_x86_64": [
+            ":ctre-java-native__com_ctre_phoenix_sim__cci_sim-jni-lib",
+            ":ctre-java-native__com_ctre_phoenix_sim__simTalonSRX-jni-lib",
+            ":ctre-java-native__com_ctre_phoenix_sim__simVictorSPX-jni-lib",
+        ],
+    }),
+)
