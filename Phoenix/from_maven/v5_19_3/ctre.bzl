@@ -3,20 +3,30 @@ Auto-generated rules for ctre
 """
 
 load("@wpi_bazel_rules//rules:wpilib_repo.bzl", "wpilib_java_vendor_library", "wpilib_native_dependency")
+load("@bazel_tools//tools/build_defs/repo:jvm.bzl", "jvm_maven_import_external")
 
 def third_party_ctre():
     __third_party_ctre_native()
     return __third_party_ctre_java()
 
 def __third_party_ctre_java():
-    artifacts = [
-        "com.ctre.phoenix:api-java:5.19.3",
-        "com.ctre.phoenix:wpiapi-java:5.19.3",
-    ]
+    repository_url = "https://devsite.ctr-electronics.com/maven/release"
 
-    repositories = ["https://devsite.ctr-electronics.com/maven/release"]
+    deps = []
+    deps.append(("ctre-api-java", "com.ctre.phoenix:api-java:5.19.3", "e8353e35669875c99d68475a2a540cf9ed7936cffe14080c1f8f63217780b2e4"))
+    deps.append(("ctre-wpiapi-java", "com.ctre.phoenix:wpiapi-java:5.19.3", "616a6479d8dd1ee7bb1c78cdbeea023ebf74c71734a946c4d721a67ebeceeb52"))
 
-    return artifacts, repositories
+    for name, artifact, sha in deps:
+        jvm_maven_import_external(
+            name = name,
+            artifact = artifact,
+            artifact_sha256 = sha,
+            server_urls = [repository_url],
+        )
+
+    artifacts = []
+
+    return artifacts, []
 
 def __third_party_ctre_native():
     wpilib_native_dependency(

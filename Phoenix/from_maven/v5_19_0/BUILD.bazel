@@ -1,6 +1,5 @@
-
 load("@rules_java//java:defs.bzl", "java_library")
-load("@wpi_bazel_rules//rules:cc.bzl",  "wpilib_cc_library")
+load("@wpi_bazel_rules//rules:cc.bzl", "wpilib_cc_library")
 load("@wpi_bazel_rules//rules:wpilib_repo.bzl", "make_cpp_alias", "make_jni_alias")
 
 package(default_visibility = ["//visibility:public"])
@@ -27,14 +26,13 @@ make_cpp_alias(name = "ctre-simVictorSPX")
 
 alias(
     name = "api-java",
-    actual = "@maven//:com_ctre_phoenix_api_java",
+    actual = "@ctre-api-java//jar",
 )
 
 alias(
     name = "wpiapi-java",
-    actual = "@maven//:com_ctre_phoenix_wpiapi_java",
+    actual = "@ctre-wpiapi-java//jar",
 )
-
 
 make_jni_alias(name = "ctre-java-native__com_ctre_phoenix__cci")
 
@@ -43,7 +41,6 @@ make_jni_alias(name = "ctre-java-native__com_ctre_phoenix_sim__cci_sim")
 make_jni_alias(name = "ctre-java-native__com_ctre_phoenix_sim__simTalonSRX")
 
 make_jni_alias(name = "ctre-java-native__com_ctre_phoenix_sim__simVictorSPX")
-
 
 alias(
     name = "ccijni",
@@ -65,77 +62,76 @@ alias(
     actual = ":ctre-java-native__com_ctre_phoenix_sim__simVictorSPX-jni-lib",
 )
 
-
 wpilib_cc_library(
     name = "wpiapi-cpp",
+    linkstatic = 1,
     raw_deps = [
         "@ctre-wpiapi-cpp-headers//:headers",
         ":ctre-wpiapi-cpp-libs",
     ],
-    linkstatic=1,
 )
 
 wpilib_cc_library(
     name = "api-cpp",
+    linkstatic = 1,
     raw_deps = [
         "@ctre-api-cpp-headers//:headers",
         ":ctre-api-cpp-libs",
     ],
-    linkstatic=1,
 )
 
 wpilib_cc_library(
     name = "cci",
+    linkstatic = 1,
     raw_deps = [
         "@ctre-cci-headers//:headers",
         ":ctre-cci-libs",
     ],
-    linkstatic=1,
 )
 
 wpilib_cc_library(
     name = "cci-sim",
+    linkstatic = 1,
     raw_deps = [
         "@ctre-cci-sim-headers//:headers",
         ":ctre-cci-sim-libs",
     ],
-    linkstatic=1,
 )
 
 wpilib_cc_library(
     name = "diagnostics",
+    linkstatic = 1,
     raw_deps = [
         "@ctre-diagnostics-headers//:headers",
         ":ctre-diagnostics-libs",
     ],
-    linkstatic=1,
 )
 
 wpilib_cc_library(
     name = "canutils",
+    linkstatic = 1,
     raw_deps = [
         "@ctre-canutils-headers//:headers",
         ":ctre-canutils-libs",
     ],
-    linkstatic=1,
 )
 
 wpilib_cc_library(
     name = "platform-sim",
+    linkstatic = 1,
     raw_deps = [
         "@ctre-platform-sim-headers//:headers",
         ":ctre-platform-sim-libs",
     ],
-    linkstatic=1,
 )
 
 wpilib_cc_library(
     name = "core",
+    linkstatic = 1,
     raw_deps = [
         "@ctre-core-headers//:headers",
         ":ctre-core-libs",
     ],
-    linkstatic=1,
 )
 
 wpilib_cc_library(
@@ -143,11 +139,11 @@ wpilib_cc_library(
     srcs = [
         ":ctre-simTalonSRX-shared-libs",
     ],
+    linkstatic = 1,
     raw_deps = [
         "@ctre-simTalonSRX-headers//:headers",
         ":ctre-simTalonSRX-libs",
     ],
-    linkstatic=1,
 )
 
 wpilib_cc_library(
@@ -155,12 +151,13 @@ wpilib_cc_library(
     srcs = [
         ":ctre-simVictorSPX-shared-libs",
     ],
+    linkstatic = 1,
     raw_deps = [
         "@ctre-simVictorSPX-headers//:headers",
         ":ctre-simVictorSPX-libs",
     ],
-    linkstatic=1,
 )
+
 wpilib_cc_library(
     name = "ctre-cpp",
     raw_deps = select({
