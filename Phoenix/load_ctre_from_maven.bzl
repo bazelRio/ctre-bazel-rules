@@ -13,13 +13,13 @@ def ctre_version_conf_impl(repository_ctx):
     version = repository_ctx.attr.version
 
     supported_versions = [
-        "5.19.0",
+        "5.19.0"  ,
         "5.19.1",
         "5.19.2",
         "5.19.3",
         "5.19.4",
         "5.19.5-rc-1",
-        "5.19.5-rc-2",
+        "5.19.5-rc-2"
     ]
 
     if version not in supported_versions:
